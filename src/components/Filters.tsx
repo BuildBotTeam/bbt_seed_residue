@@ -1,17 +1,32 @@
 import {useAppDispatch, useAppSelector} from "../hooks";
-import React, {useEffect} from "react";
-import {getCountryOrigin, getCrops, getHybrid, getIncoming, getProvider, getTypeSeeds} from "../store/actions/seeds";
-import {Autocomplete, Button, Checkbox, MenuItem, Stack, TextField} from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {
+    getCountryOrigin,
+    getCrops,
+    getIncoming,
+    getProvider,
+    getSeeds,
+    getTypeSeeds
+} from "../store/actions/seeds";
+import {Autocomplete, Box, Button, Checkbox, Stack, TextField, TextFieldProps} from "@mui/material";
 import {useForm, Controller} from "react-hook-form";
+import {DateRangePicker, DateRange} from '@mui/x-date-pickers-pro/DateRangePicker';
+import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import {ru} from "date-fns/locale";
+import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
+import {DatePicker} from "@mui/x-date-pickers/DatePicker";
+import InputMask from 'react-input-mask';
+import moment from "moment/moment";
 
 export const FiltersForm = () => {
     const {handleSubmit, control} = useForm();
     const dispatch = useAppDispatch()
-    const {type_seeds, hybrid, provider, crops, country_origin} = useAppSelector(state => state.seedsReducer)
+    const {type_seeds, provider, crops, country_origin, seeds} = useAppSelector(state => state.seedsReducer)
+    const [value, setValue] = useState<string>()
 
     useEffect(() => {
         dispatch(getTypeSeeds())
-        dispatch(getHybrid())
+        dispatch(getSeeds())
         dispatch(getProvider())
         dispatch(getCountryOrigin())
         dispatch(getCrops())
@@ -25,7 +40,26 @@ export const FiltersForm = () => {
         <form
             onSubmit={handleSubmit(onSubmit)}>
             <Stack direction={'row'} spacing={2}>
-                <TextField label="Номер партии" size={'small'} />
+                <TextField label="Номер партии" size={'small'}/>
+                {/*<Controller*/}
+                {/*    name={'crop_year'}*/}
+                {/*    control={control}*/}
+                {/*    render={({field: {onChange, value}}) => (*/}
+                {/*        <LocalizationProvider adapterLocale={ru} dateAdapter={AdapterDateFns}>*/}
+                {/*            <DatePicker*/}
+                {/*                label='Дата доставки'*/}
+                {/*                value={value}*/}
+                {/*                minDate={new Date('2022-01-01')}*/}
+                {/*                views={['year']}*/}
+                {/*                onChange={onChange}*/}
+                {/*                renderInput={(params: any) => <TextField required {...params}/>}*/}
+                {/*            />*/}
+                {/*        </LocalizationProvider>*/}
+                {/*    )}*/}
+                {/*/>*/}
+                <InputMask mask="9999" maskChar={null}>
+                    {() => (<TextField name={'crop_year'} label={'Год'} fullWidth/>)}
+                </InputMask>
                 <Controller
                     name={'seed__type_seeds__in'}
                     control={control}
@@ -54,12 +88,12 @@ export const FiltersForm = () => {
                         />)}
                 />
                 <Controller
-                    name={'seed__hybrid__in'}
+                    name={'seed__in'}
                     control={control}
                     render={({field: {onChange}}) => (
                         <Autocomplete
                             multiple
-                            options={hybrid}
+                            options={seeds}
                             disableCloseOnSelect
                             getOptionLabel={(option) => option.name}
                             onChange={(_, value) => onChange(value.map(val => val.id).join(','))}
@@ -76,7 +110,7 @@ export const FiltersForm = () => {
                             )}
                             style={{width: 300}}
                             renderInput={(params) => (
-                                <TextField {...params} label="Гибрид" size={'small'}/>
+                                <TextField {...params} label="Семена" size={'small'}/>
                             )}
                         />)}
                 />
@@ -161,7 +195,9 @@ export const FiltersForm = () => {
                             )}
                         />)}
                 />
-                <Button type={'submit'} variant={'contained'} size={'small'}>Найти</Button>
+                <Box>
+                    <Button type={'submit'} variant={'contained'}>Найти</Button>
+                </Box>
             </Stack>
         </form>
     )

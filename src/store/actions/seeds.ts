@@ -1,6 +1,6 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import api, {apiError, apiUrl} from "../../api";
-import {IFilter} from "../../models/ISeeds";
+import {IFilter, ISeeds} from "../../models/ISeeds";
 import {AxiosError} from "axios";
 
 export const getCrops = createAsyncThunk(
@@ -8,10 +8,7 @@ export const getCrops = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const {data} = await api.get<IFilter[]>(apiUrl + 'crops/')
-            return data.map(val => {
-                val.type = 'crops'
-                return val
-            })
+            return data
         } catch (e) {
             return thunkAPI.rejectWithValue(apiError(e as Error | AxiosError))
         }
@@ -23,10 +20,7 @@ export const getTypeSeeds = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const {data} = await api.get<IFilter[]>(apiUrl + 'type_seeds/')
-            return data.map(val => {
-                val.type = 'type_seeds'
-                return val
-            })
+            return data
         } catch (e) {
             return thunkAPI.rejectWithValue(apiError(e as Error | AxiosError))
         }
@@ -38,10 +32,7 @@ export const getHybrid = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const {data} = await api.get<IFilter[]>(apiUrl + 'hybrid/')
-            return data.map(val => {
-                val.type = 'hybrid'
-                return val
-            })
+            return data
         } catch (e) {
             return thunkAPI.rejectWithValue(apiError(e as Error | AxiosError))
         }
@@ -53,10 +44,7 @@ export const getProvider = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const {data} = await api.get<IFilter[]>(apiUrl + 'provider/')
-            return data.map(val => {
-                val.type = 'provider'
-                return val
-            })
+            return data
         } catch (e) {
             return thunkAPI.rejectWithValue(apiError(e as Error | AxiosError))
         }
@@ -68,10 +56,19 @@ export const getCountryOrigin = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const {data} = await api.get<IFilter[]>(apiUrl + 'country_origin/')
-            return data.map(val => {
-                val.type = 'country_origin'
-                return val
-            })
+            return data
+        } catch (e) {
+            return thunkAPI.rejectWithValue(apiError(e as Error | AxiosError))
+        }
+    }
+)
+
+export const getSeeds = createAsyncThunk(
+    'getSeeds',
+    async (_, thunkAPI) => {
+        try {
+            const {data} = await api.get<ISeeds[]>(apiUrl + 'seeds/')
+            return data
         } catch (e) {
             return thunkAPI.rejectWithValue(apiError(e as Error | AxiosError))
         }
