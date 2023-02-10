@@ -1,6 +1,14 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {IExpense, IFilter, IIncoming, ISeeds} from "../../models/ISeeds";
-import {getCountryOrigin, getCrops, getHybrid, getProvider, getSeeds, getTypeSeeds} from "../actions/seeds";
+import {
+    getCountryOrigin,
+    getCrops,
+    getHybrid,
+    getIncoming,
+    getProvider,
+    getSeeds,
+    getTypeSeeds
+} from "../actions/seeds";
 
 
 interface ISeedsState {
@@ -47,6 +55,9 @@ export const seedsSlice = createSlice({
         })
         builder.addCase(getSeeds.fulfilled, (state, {payload}) => {
             state.seeds = payload
+        })
+        builder.addCase(getIncoming.fulfilled, (state, {payload}) => {
+            state.incoming = payload
         })
     }
 })

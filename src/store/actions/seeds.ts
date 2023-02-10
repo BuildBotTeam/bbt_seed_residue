@@ -77,7 +77,7 @@ export const getSeeds = createAsyncThunk(
 
 export const getIncoming = createAsyncThunk(
     'getIncoming',
-    async (query: IFilter, thunkAPI) => {
+    async (query: any, thunkAPI) => {
         try {
             const {data} = await api.get<any>(apiUrl + 'incoming/', {params: query})
             return data
