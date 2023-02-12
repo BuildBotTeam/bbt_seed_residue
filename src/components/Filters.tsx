@@ -271,7 +271,10 @@ export const FiltersForm = () => {
                     <Grid xs={12} sm={6} md={4} lg={3} lgOffset={9}>
                         <Stack spacing={2} direction={'row'} sx={{float: 'right'}}>
                             <Button variant={'contained'} color={'error'}
-                                    onClick={() => reset({amount_start: '1', amount_end: '9999999'})}>
+                                    onClick={() => {
+                                        reset({amount_start: '1', amount_end: '9999999'})
+                                        dispatch(getIncoming({amount__range: '1,9999999'}))
+                                    }}>
                                 Сбросить
                             </Button>
                             <Button type={'submit'} variant={'contained'}>Найти</Button>

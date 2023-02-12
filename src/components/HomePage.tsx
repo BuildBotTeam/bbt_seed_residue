@@ -1,7 +1,8 @@
 import {Box, Stack} from '@mui/material';
 import React from 'react';
 import FiltersForm from './Filters';
-import CollapsibleTable from "./SeedsTable";
+import SeedsTable from "./SeedsTable";
+import SeedsTable2 from "./SeedsTable2";
 
 const HomePage = () => {
 
@@ -9,7 +10,8 @@ const HomePage = () => {
         <Box sx={{p: {xs: 1, md: 4}}}>
             <Stack spacing={2}>
                 <FiltersForm/>
-                <CollapsibleTable/>
+                <SeedsTable/>
+                <SeedsTable2 />
             </Stack>
         </Box>
     )
