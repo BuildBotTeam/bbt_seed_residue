@@ -1,6 +1,7 @@
 import React from 'react';
 import {Box, Button, Paper, Stack, TextField, Typography} from "@mui/material";
 import {useForm, Controller} from "react-hook-form";
+import {getHostname} from "../api";
 
 export default function LoginPage() {
     const {control, handleSubmit} = useForm()
@@ -35,7 +36,7 @@ export default function LoginPage() {
                         <Box>
                             <Stack sx={{float: 'right'}} direction={'row'} spacing={2}>
                                 <Button size={'small'} variant={'text'}
-                                        href={'http://localhost:3000/remote_auth?service=seeds'}>
+                                        href={`http://localhost:3000/remote_auth?service=seeds&url=${getHostname('main')}/remote_auth`}>
                                     Войти через основной сайт
                                 </Button>
                                 <Button sx={{float: 'right'}} size={'large'} type={'submit'}

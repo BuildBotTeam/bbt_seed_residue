@@ -65,6 +65,7 @@ const App: React.FC = () => {
     }, [error])
 
     useEffect(() => {
+        console.log(search, search.get('error'))
         if (search.get('error')) {
             enqueueSnackbar('Вы не авторизированы на основном сайте', {variant: 'error'})
         } else {

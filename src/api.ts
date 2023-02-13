@@ -10,15 +10,13 @@ const actualUrl = {
     },
 }
 
-const server = window.location.port === '3000' ? 'test' : 'main'
-
-export function getHostname() {
+export function getHostname(server: keyof typeof actualUrl) {
     const {hostname, port, protocol} = actualUrl[server]
     return `${protocol}//${hostname}${port ? ':' + port : ''}`
 }
 
-export const apiUrl = `${getHostname()}/api/`
-export const restAuthUrl = `${getHostname()}/rest-auth/`
+export const apiUrl = `${getHostname(window.location.port === '3000' ? 'test' : 'main')}/api/`
+export const restAuthUrl = `${getHostname(window.location.port === '3000' ? 'test' : 'main')}/rest-auth/`
 
 
 const api = axios.create({
