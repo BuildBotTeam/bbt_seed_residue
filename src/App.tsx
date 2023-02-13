@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import './App.scss';
-import {Navigate, Route, Routes, useLocation} from "react-router-dom";
+import {Navigate, Route, Routes, useLocation, useSearchParams} from "react-router-dom";
 import {checkToken, logout} from "./store/actions/auth";
 import {useAppDispatch, useAppSelector} from "./hooks";
 import {
@@ -10,10 +10,14 @@ import {
 } from '@mui/material';
 import {useSnackbar} from "notistack";
 import HomePage from "./components/HomePage";
+import LoginPage from "./components/LoginPage";
 
 const theme = createTheme({
     typography: {
         fontFamily: 'Arial',
+        h3: {
+            fontWeight: 'bold',
+        },
     },
     palette: {
         // mode: 'dark',
@@ -51,6 +55,7 @@ const App: React.FC = () => {
     const location = useLocation()
     const dispatch = useAppDispatch()
     const {enqueueSnackbar} = useSnackbar()
+    const [search] = useSearchParams()
     const {user, token, error} = useAppSelector(state => state.authReducer)
 
     useEffect(() => {
@@ -60,7 +65,11 @@ const App: React.FC = () => {
     }, [error])
 
     useEffect(() => {
-        dispatch(checkToken())
+        if (search.get('error')) {
+            enqueueSnackbar('Вы не авторизированы на основном сайте', {variant: 'error'})
+        } else {
+            dispatch(checkToken(search.get('token')))
+        }
     }, [])
 
     useEffect(() => {
@@ -72,22 +81,22 @@ const App: React.FC = () => {
         if (location.pathname === '/logout') {
             dispatch(logout())
         }
-        // if (!token && !sToken) {
-        //     return (
-        //         <Routes>
-        //             <Route path={'*'} element={<Navigate replace to={'login'}/>}/>
-        //             <Route path="login" element={<div/>}/>
-        //         </Routes>
-        //     )
-        // }
-        // if (user) {
+        if (!token && !sToken) {
             return (
                 <Routes>
-                    <Route path="login" element={<Navigate to={'/'}/>}/>
-                    <Route path="change_password" element={<Navigate to={'/'}/>}/>
-                    <Route path="/" element={<HomePage/>}/>
+                    <Route path={'*'} element={<Navigate replace to={'login'}/>}/>
+                    <Route path="login" element={<LoginPage/>}/>
                 </Routes>
             )
+        }
+        // if (user) {
+        return (
+            <Routes>
+                <Route path="login" element={<Navigate to={'/'}/>}/>
+                <Route path="change_password" element={<Navigate to={'/'}/>}/>
+                <Route path="/" element={<HomePage/>}/>
+            </Routes>
+        )
         // }
         // return (
         //     <Box className={'login-container'}>

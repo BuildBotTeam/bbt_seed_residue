@@ -42,8 +42,8 @@ export const logout = createAsyncThunk(
 
 export const checkToken = createAsyncThunk(
     'checkToken',
-    async (_, thunkAPI) => {
-        const token = localStorage.getItem('token');
+    async (token: string | null, thunkAPI) => {
+        if (!token) token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         if (token) {
             try {
@@ -52,6 +52,7 @@ export const checkToken = createAsyncThunk(
                     config.headers["Authorization"] = `Token ${token}`;
                     return config
                 })
+                localStorage.setItem('token', token)
                 return {user: user, token: token, interceptor: interceptor}
             } catch (e) {
                 thunkAPI.dispatch(logout());
