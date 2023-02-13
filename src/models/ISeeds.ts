@@ -1,3 +1,11 @@
+export interface IPagination<Type> {
+    count: number
+    next: string | null
+    previous: string | null
+    results: Type
+}
+
+
 export interface IFilter {
     id: string
     name: string
@@ -20,8 +28,14 @@ export interface IIncoming {
     provider: number
     country_origin: number
     amount: number
+    real_balance: number
+    gift: number
     package_opened: boolean
     comment: string
+}
+
+export interface IIncomingExpense {
+    [incoming: number]: IExpense[]
 }
 
 export interface IExpense {
@@ -29,7 +43,7 @@ export interface IExpense {
     date_time: string
     number_greenhouse: number
     amount: number
-    amount_after_sowing: number
+    rows: string
     germination: string
     incoming: number
     comment: string

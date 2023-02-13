@@ -1,36 +1,41 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {IExpense, IFilter, IIncoming, ISeeds} from "../../models/ISeeds";
+import {IExpense, IFilter, IIncoming, IIncomingExpense, ISeeds} from "../../models/ISeeds";
 import {
+    createExpense,
+    createIncoming, deleteExpense, deleteIncoming,
     getCountryOrigin,
-    getCrops,
+    getCrops, getExpense, getGreenhouse,
     getHybrid,
     getIncoming,
     getProvider,
     getSeeds,
-    getTypeSeeds
+    getTypeSeeds, updateExpense, updateIncoming
 } from "../actions/seeds";
+import {deleteElementFromList, updateElementInList} from "../../utils";
 
 
 interface ISeedsState {
     type_seeds: IFilter[]
+    greenhouse: IFilter[]
     hybrid: IFilter[]
     provider: IFilter[]
     crops: IFilter[]
     country_origin: IFilter[]
     seeds: ISeeds[]
     incoming: IIncoming[]
-    expense: IExpense[]
+    expense: IIncomingExpense
 }
 
 const initialState: ISeedsState = {
     type_seeds: [],
+    greenhouse: [],
     hybrid: [],
     provider: [],
     crops: [],
     country_origin: [],
     seeds: [],
     incoming: [],
-    expense: [],
+    expense: {},
 }
 
 export const seedsSlice = createSlice({
@@ -40,6 +45,9 @@ export const seedsSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getCrops.fulfilled, (state, {payload}) => {
             state.crops = payload
+        })
+        builder.addCase(getGreenhouse.fulfilled, (state, {payload}) => {
+            state.greenhouse = payload
         })
         builder.addCase(getTypeSeeds.fulfilled, (state, {payload}) => {
             state.type_seeds = payload
@@ -57,7 +65,33 @@ export const seedsSlice = createSlice({
             state.seeds = payload
         })
         builder.addCase(getIncoming.fulfilled, (state, {payload}) => {
-            state.incoming = payload
+            if (!Array.isArray(payload)) {
+                console.log(payload)
+                state.incoming = updateElementInList(state.incoming, payload)
+            } else {
+                state.incoming = payload
+            }
+        })
+        builder.addCase(createIncoming.fulfilled, (state, {payload}) => {
+            state.incoming = [payload, ...state.incoming]
+        })
+        builder.addCase(updateIncoming.fulfilled, (state, {payload}) => {
+            state.incoming = updateElementInList(state.incoming, payload)
+        })
+        builder.addCase(deleteIncoming.fulfilled, (state, {payload}) => {
+            state.incoming = deleteElementFromList(state.incoming, payload)
+        })
+        builder.addCase(getExpense.fulfilled, (state, {payload}) => {
+            state.expense = Object.assign(state.expense, payload)
+        })
+        builder.addCase(createExpense.fulfilled, (state, {payload}) => {
+            state.expense[payload.incoming] = [payload, ...state.expense[payload.incoming]]
+        })
+        builder.addCase(updateExpense.fulfilled, (state, {payload}) => {
+            state.expense[payload.incoming] = updateElementInList(state.expense[payload.incoming], payload)
+        })
+        builder.addCase(deleteExpense.fulfilled, (state, {payload}) => {
+            state.expense[payload.incoming] = deleteElementFromList(state.expense[payload.incoming], payload.id)
         })
     }
 })
