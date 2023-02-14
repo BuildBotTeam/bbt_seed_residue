@@ -11,15 +11,14 @@ export const login = createAsyncThunk(
     async (post: IAuth, thunkAPI) => {
         try {
             const {data} = await axios.post<IAuthResponse>(restAuthUrl + 'login/', post)
-            localStorage.setItem('user', JSON.stringify(data.user))
             localStorage.setItem('token', data.key)
             interceptor = api.interceptors.request.use((config: any) => {
                 config.headers["Authorization"] = `Token ${data.key}`;
                 return config
             })
-            return {user: data.user, token: data.key, interceptor: interceptor}
-        } catch (e) {
-            return thunkAPI.rejectWithValue({code: 0, message: 'Неверный логин или пароль'})
+            return {token: data.key, interceptor: interceptor}
+        } catch (e: any) {
+            return thunkAPI.rejectWithValue({code: 0, message: e.message})
         }
     }
 )
@@ -28,7 +27,6 @@ export const logout = createAsyncThunk(
     'logout',
     async (_, thunkAPI) => {
         localStorage.removeItem('token');
-        localStorage.removeItem('user');
         try {
             await api.post(restAuthUrl + "logout/", {})
             api.interceptors.request.eject(interceptor)
@@ -44,7 +42,6 @@ export const checkToken = createAsyncThunk(
     'checkToken',
     async (token: string | null, thunkAPI) => {
         if (!token) token = localStorage.getItem('token');
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
         if (token) {
             try {
                 await axios.post<IAuthResponse>(apiUrl + 'check_token/', {token: token})
@@ -53,13 +50,16 @@ export const checkToken = createAsyncThunk(
                     return config
                 })
                 localStorage.setItem('token', token)
-                return {user: user, token: token, interceptor: interceptor}
+                return {token: token, interceptor: interceptor}
             } catch (e) {
                 thunkAPI.dispatch(logout());
                 return thunkAPI.rejectWithValue(apiError(e as Error | AxiosError))
             }
         } else if (token === undefined) {
+            console.log(token)
             thunkAPI.dispatch(logout());
+            return thunkAPI.rejectWithValue({code: 0, message: 'В системе обнаружен устаревший токен'})
         }
+        return thunkAPI.rejectWithValue({})
     }
 )

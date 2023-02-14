@@ -1,16 +1,16 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import './App.scss';
-import {Navigate, Route, Routes, useLocation, useSearchParams} from "react-router-dom";
+import {Navigate, Route, Routes, useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {checkToken, logout} from "./store/actions/auth";
 import {useAppDispatch, useAppSelector} from "./hooks";
 import {
     createTheme,
-    CssBaseline,
     ThemeProvider
 } from '@mui/material';
 import {useSnackbar} from "notistack";
 import HomePage from "./components/HomePage";
 import LoginPage from "./components/LoginPage";
+import {rejectRemoteAuth} from "./store/reducers/AuthReducer";
 
 const theme = createTheme({
     typography: {
@@ -56,7 +56,7 @@ const App: React.FC = () => {
     const dispatch = useAppDispatch()
     const {enqueueSnackbar} = useSnackbar()
     const [search] = useSearchParams()
-    const {user, token, error} = useAppSelector(state => state.authReducer)
+    const {isAuth, authState, error} = useAppSelector(state => state.authReducer)
 
     useEffect(() => {
         if (error?.message && error?.code !== 401) {
@@ -65,11 +65,20 @@ const App: React.FC = () => {
     }, [error])
 
     useEffect(() => {
-        console.log(search, search.get('error'))
-        if (search.get('error')) {
-            enqueueSnackbar('Вы не авторизированы на основном сайте', {variant: 'error'})
+        if (location.pathname === '/logout') {
+            dispatch(logout())
         } else {
-            dispatch(checkToken(search.get('token')))
+            console.log(location)
+            if (search.get('error')) {
+                dispatch(rejectRemoteAuth({
+                    error: {
+                        message: 'Вы не авторизированы на основном сайте',
+                        code: search.get('error')
+                    }
+                }))
+            } else {
+                dispatch(checkToken(search.get('token')))
+            }
         }
     }, [])
 
@@ -78,11 +87,8 @@ const App: React.FC = () => {
     }, [location])
 
     const routes = () => {
-        let sToken = localStorage.getItem('token')
-        if (location.pathname === '/logout') {
-            dispatch(logout())
-        }
-        if (!token && !sToken) {
+        if (authState) return <div/>
+        if (!authState && !isAuth) {
             return (
                 <Routes>
                     <Route path={'*'} element={<Navigate replace to={'login'}/>}/>
@@ -90,27 +96,20 @@ const App: React.FC = () => {
                 </Routes>
             )
         }
-        // if (user) {
         return (
             <Routes>
                 <Route path="login" element={<Navigate to={'/'}/>}/>
                 <Route path="change_password" element={<Navigate to={'/'}/>}/>
+                <Route path="logout" element={<Navigate replace to={'login'}/>}/>
                 <Route path="/" element={<HomePage/>}/>
+                <Route path={'*'} element={<Navigate replace to={'/'}/>}/>
             </Routes>
         )
-        // }
-        // return (
-        //     <Box className={'login-container'}>
-        //     </Box>
-        // )
     }
 
     return (
         <ThemeProvider theme={theme}>
-            <div className="App">
-                <CssBaseline/>
-                {routes()}
-            </div>
+            {routes()}
         </ThemeProvider>
     )
 }

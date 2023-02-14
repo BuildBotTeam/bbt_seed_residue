@@ -78,7 +78,7 @@ export default function ExpenseTable({incoming}: ExpenseTableProps) {
                 title={'Расход семян'}
                 options={options}
                 localization={localizationMT}
-                // style={{display: 'grid'}}
+                style={{display: 'grid'}}
                 columns={columns.map((c) => ({...c, tableData: undefined}))}
                 data={data}
                 // actions={actions}
