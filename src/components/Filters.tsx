@@ -19,6 +19,7 @@ import InputMask from 'react-input-mask';
 import {IFilter} from "../models/ISeeds";
 import {useSearchParams} from "react-router-dom";
 import {LoadingButton} from "@mui/lab";
+import { convertArrayToString } from "../utils";
 
 
 type FormAutocompleteSelectProps = {
@@ -70,7 +71,6 @@ function FormAutocompleteSelect(props: FormAutocompleteSelectProps) {
     )
 }
 
-
 export default function FiltersForm() {
     const {handleSubmit, control, reset, setValue} = useForm();
     const dispatch = useAppDispatch()
@@ -118,12 +118,7 @@ export default function FiltersForm() {
     }
 
     function onSubmit(data: any) {
-        data.seed__type_seeds__in = data.seed__type_seeds__in.length > 0 && data.seed__type_seeds__in.map((val: IFilter) => val.id).join(',')
-        data.seed__in = data.seed__in.length > 0 && data.seed__in.map((val: IFilter) => val.id).join(',')
-        data.provider__in = data.provider__in.length > 0 && data.provider__in.map((val: IFilter) => val.id).join(',')
-        data.seed__crops__in = data.seed__crops__in.length > 0 && data.seed__crops__in.map((val: IFilter) => val.id).join(',')
-        data.country_origin__in = data.country_origin__in.length > 0 && data.country_origin__in.map((val: IFilter) => val.id).join(',')
-        data.expense__number_greenhouse__in = data.expense__number_greenhouse__in.length > 0 && data.expense__number_greenhouse__in.map((val: IFilter) => val.id).join(',')
+        data = convertArrayToString(data)
         data.amount__range = `${!data.amount_start && data.amount_end ? '0' : data.amount_start || ''},${data.amount_start && !data.amount_end ? '9999999' : data.amount_end || ''}`
         data.real_balance__range = `${!data.real_balance_start && data.real_balance_end ? '0' : data.real_balance_start || ''},${data.real_balance_start && !data.real_balance_end ? '9999999' : data.real_balance_end || ''}`
         data.amount_start = undefined

@@ -1,4 +1,4 @@
-import { IPagination } from "./models/ISeeds";
+import {IFilter, IPagination} from "./models/ISeeds";
 
 export const localizationMT = {
     body: {
@@ -75,4 +75,13 @@ export const deleteElementFromList = (list: any[], id: number) => {
 export const updatePaginationList = (page: IPagination<any[]>, newPage: IPagination<any[]>) => {
     if (newPage.previous) newPage.results = [...page.results, ...newPage.results]
     return newPage
+}
+
+export function convertArrayToString(obj: any) {
+    Object.keys(obj).forEach(key => {
+        if (Array.isArray(obj[key])) {
+            obj[key] = obj[key].map((val: IFilter) => val.id).join(',')
+        }
+    })
+    return {...obj}
 }

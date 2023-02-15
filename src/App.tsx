@@ -74,7 +74,6 @@ const App: React.FC = () => {
         if (location.pathname === '/logout') {
             dispatch(logout())
         } else {
-            console.log(location)
             if (search.get('error')) {
                 dispatch(rejectRemoteAuth({
                     error: {
