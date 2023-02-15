@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {IExpense, IFilter, IIncoming, IIncomingExpense, ISeeds} from "../../models/ISeeds";
+import {IFilter, IIncoming, IIncomingExpense, ISeeds} from "../../models/ISeeds";
 import {
     createExpense,
     createIncoming, deleteExpense, deleteIncoming,
@@ -66,7 +66,6 @@ export const seedsSlice = createSlice({
         })
         builder.addCase(getIncoming.fulfilled, (state, {payload}) => {
             if (!Array.isArray(payload)) {
-                console.log(payload)
                 state.incoming = updateElementInList(state.incoming, payload)
             } else {
                 state.incoming = payload

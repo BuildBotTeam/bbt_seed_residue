@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {Box, Button, IconButton, InputAdornment, Paper, Stack, TextField, Typography} from "@mui/material";
 import {useForm, Controller} from "react-hook-form";
-import {getHostname} from "../api";
-import {checkToken, login} from "../store/actions/auth";
+import {remoteAuthUrl} from "../api";
+import {login} from "../store/actions/auth";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -27,17 +27,17 @@ export default function LoginPage() {
     }
 
     return (
-        <Box sx={{padding: 1}}>
+        <Box sx={{padding: 1, position: 'relative'}}>
             <Paper sx={{
-                margin: {xs: '50px auto', sm: '300px auto 0 auto'},
+                margin: {xs: '50px auto', sm: '250px auto 0 auto'},
                 position: 'relative',
-                width: {xs: '100%', sm: 500},
+                width: {xs: 'auto', sm: 500},
                 padding: 1,
                 minWidth: 350,
             }}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack spacing={2} sx={{padding: 1}}>
-                        <Typography variant={'h3'} sx={{textAlign: 'center'}}>Добро пожаловать</Typography>
+                        <Typography variant={'h1'} sx={{textAlign: 'center'}}>Учет семян</Typography>
                         <Controller
                             name={'username'}
                             control={control}
@@ -68,12 +68,13 @@ export default function LoginPage() {
                         />
                         <Box>
                             <Stack sx={{float: 'right'}} direction={'row'} spacing={2}>
-                                <Button size={'small'} variant={'text'}
-                                        href={`http://localhost:3000/remote_auth?service=seeds&url=${getHostname('main')}/remote_auth`}>
+                                <Button disabled={isLoading} size={'small'} variant={'text'} href={remoteAuthUrl}>
                                     Войти через основной сайт
                                 </Button>
                                 <LoadingButton loading={isLoading} sx={{float: 'right'}} size={'large'} type={'submit'}
-                                               variant={'contained'}>Войти</LoadingButton>
+                                               variant={'contained'}>
+                                    Войти
+                                </LoadingButton>
                             </Stack>
                         </Box>
                     </Stack>

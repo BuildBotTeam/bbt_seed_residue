@@ -1,6 +1,6 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect} from 'react';
 import './App.scss';
-import {Navigate, Route, Routes, useLocation, useNavigate, useSearchParams} from "react-router-dom";
+import {Navigate, Route, Routes, useLocation, useSearchParams} from "react-router-dom";
 import {checkToken, logout} from "./store/actions/auth";
 import {useAppDispatch, useAppSelector} from "./hooks";
 import {
@@ -15,8 +15,14 @@ import {rejectRemoteAuth} from "./store/reducers/AuthReducer";
 const theme = createTheme({
     typography: {
         fontFamily: 'Arial',
-        h3: {
+        h1: {
+            fontFamily: 'CLEANVEB',
+            fontSize: '5rem',
             fontWeight: 'bold',
+        },
+        h6: {
+            fontFamily: 'CLEANVEB',
+            fontSize: '2.5rem',
         },
     },
     palette: {

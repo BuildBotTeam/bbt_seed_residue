@@ -17,9 +17,10 @@ export function getHostname(server: keyof typeof actualUrl) {
     return `${protocol}//${hostname}${port ? ':' + port : ''}`
 }
 
+export const remoteAuthUrl = `${server === 'test' ? "http://localhost:3000" : "https://test.ecoferma56.ru"}/remote_auth?service=seeds&url=${getHostname('main')}/remote_auth`
+
 export const apiUrl = `${getHostname(server)}/api/`
 export const restAuthUrl = `${getHostname(server)}/rest-auth/`
-
 
 const api = axios.create({
     baseURL: apiUrl,
