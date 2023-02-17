@@ -48,14 +48,15 @@ export default function ExpenseTable({incoming}: ExpenseTableProps) {
                 validate: rowData => !!rowData.amount,
             }, {
                 title: 'Ряды', field: 'rows',
-                // cellStyle: {minWidth: '250px'},
             }, {
                 title: 'Всхожесть, %', field: 'germination',
-                // lookup: seeds && convertListToObject(seeds),
-                // cellStyle: {minWidth: '250px'},
-
             }, {
-                title: 'Комментарий', field: 'comment',
+                title: 'Комментарий', field: 'comment', cellStyle: {minWidth: '250px'},
+                editComponent: ({value, onChange}) => (
+                    <TextField value={value} onChange={e => onChange(e.target.value)}
+                               inputProps={{sx: {fontSize: '13px'}}}
+                               sx={{minWidth: 250}} multiline maxRows={4}/>
+                )
             },
 
         ]),

@@ -16,10 +16,9 @@ import {useForm, Controller, Control} from "react-hook-form";
 // import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 // import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import InputMask from 'react-input-mask';
-import {IFilter} from "../models/ISeeds";
 import {useSearchParams} from "react-router-dom";
 import {LoadingButton} from "@mui/lab";
-import { convertArrayToString } from "../utils";
+import {convertArrayToString} from "../utils";
 
 
 type FormAutocompleteSelectProps = {
@@ -101,7 +100,7 @@ export default function FiltersForm() {
         } else {
             dispatch(getIncoming({real_balance__range: '1,9999999'}))
         }
-    }, [search])
+    }, [])
 
     function setDefVal() {
         const searchObj = Object.fromEntries(search)
@@ -119,6 +118,7 @@ export default function FiltersForm() {
 
     function onSubmit(data: any) {
         data = convertArrayToString(data)
+        console.log(data)
         data.amount__range = `${!data.amount_start && data.amount_end ? '0' : data.amount_start || ''},${data.amount_start && !data.amount_end ? '9999999' : data.amount_end || ''}`
         data.real_balance__range = `${!data.real_balance_start && data.real_balance_end ? '0' : data.real_balance_start || ''},${data.real_balance_start && !data.real_balance_end ? '9999999' : data.real_balance_end || ''}`
         data.amount_start = undefined
@@ -130,6 +130,7 @@ export default function FiltersForm() {
             if (data[key] && data[key] !== ',') newData[key] = data[key]
         })
         setSearch(newData)
+        dispatch(getIncoming(newData))
     }
 
     return (
@@ -207,9 +208,7 @@ export default function FiltersForm() {
                                 control={control}
                                 defaultValue={''}
                                 render={({field}) => (
-                                    <InputMask {...field} mask="9999999" maskPlaceholder={null}>
-                                        <TextField label={'Количество от'} size={'small'}/>
-                                    </InputMask>
+                                    <TextField {...field} type={'number'} label={'Количество от'} size={'small'}/>
                                 )}
                             />
                             <Controller
@@ -217,9 +216,7 @@ export default function FiltersForm() {
                                 control={control}
                                 defaultValue={''}
                                 render={({field}) => (
-                                    <InputMask {...field} mask="9999999" maskPlaceholder={null}>
-                                        <TextField label={'Количество до'} size={'small'}/>
-                                    </InputMask>
+                                    <TextField {...field} type={'number'} label={'Количество до'} size={'small'}/>
                                 )}
                             />
                         </Stack>
@@ -230,10 +227,8 @@ export default function FiltersForm() {
                                 name={'real_balance_start'}
                                 control={control}
                                 defaultValue={'1'}
-                                render={({field: {onChange, value}}) => (
-                                    <InputMask value={value} onChange={onChange} mask="9999999" maskPlaceholder={null}>
-                                        <TextField label={'Остаток от'} size={'small'}/>
-                                    </InputMask>
+                                render={({field}) => (
+                                    <TextField {...field} type={'number'} label={'Остаток от'} size={'small'}/>
                                 )}
                             />
                             <Controller
@@ -241,9 +236,7 @@ export default function FiltersForm() {
                                 control={control}
                                 defaultValue={'9999999'}
                                 render={({field}) => (
-                                    <InputMask {...field} mask="9999999" maskPlaceholder={null}>
-                                        <TextField label={'Остаток до'} size={'small'}/>
-                                    </InputMask>
+                                    <TextField {...field} type={'number'} label={'Остаток до'} size={'small'}/>
                                 )}
                             />
                         </Stack>

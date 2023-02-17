@@ -25,7 +25,7 @@ export const localizationMT = {
     pagination: {
         labelDisplayedRows: '{from}-{to} всего {count}',
         labelRowsSelect: 'строк',
-        labelRowsPerPage: 'На странице:',
+        labelRowsPerPage: '',
         firstAriaLabel: 'Первая страница',
         firstTooltip: 'Первая страница',
         previousAriaLabel: 'Предыдущая страница',

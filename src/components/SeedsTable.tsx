@@ -3,7 +3,7 @@ import MaterialTable, {Column} from "material-table";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {useEffect, useMemo, useState} from "react";
 import {createIncoming, deleteIncoming, updateIncoming} from "../store/actions/seeds";
-import {Box, TextField} from "@mui/material";
+import {Box, TextField, Tooltip, Typography} from "@mui/material";
 import {IIncoming} from "../models/ISeeds";
 import {convertListToObject, localizationMT} from '../utils';
 import {LocalizationProvider} from '@mui/x-date-pickers-pro';
@@ -47,32 +47,33 @@ export default function SeedsTable() {
             }, {
                 title: 'Год урожая', field: 'crop_year',
                 validate: rowData => !!rowData.crop_year,
-                // lookup: seeds && convertListToObject(seeds),
-                // cellStyle: {minWidth: '250px'},
 
             }, {
                 title: 'Поставщик', field: 'provider',
                 validate: rowData => !!rowData.provider,
                 lookup: provider && convertListToObject(provider),
-                // cellStyle: {minWidth: '250px'},
 
             }, {
                 title: 'Страна производитель', field: 'country_origin',
                 validate: rowData => !!rowData.country_origin,
                 lookup: country_origin && convertListToObject(country_origin),
-                // cellStyle: {minWidth: '250px'},
 
             }, {
                 title: 'Количество', field: 'amount', type: 'numeric', align: 'center',
                 validate: rowData => !!rowData.amount,
             }, {
                 title: 'Остаток', field: 'real_balance', type: 'numeric', align: 'center',
-                editable: 'never',
             }, {
                 title: 'Страховой остаток', field: 'gift', type: 'numeric', align: 'center',
                 editable: 'never',
             }, {
-                title: 'Комментарий', field: 'comment',
+                title: 'Комментарий', field: 'comment', cellStyle: {minWidth: '250px'},
+                editComponent: ({value, onChange}) => (
+                    <TextField value={value} onChange={e => onChange(e.target.value)}
+                               inputProps={{sx: {fontSize: '13px'}}}
+                               sx={{minWidth: 250}} multiline maxRows={4}/>
+                )
+
             },
 
         ]),
