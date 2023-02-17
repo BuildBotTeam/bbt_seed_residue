@@ -23,10 +23,9 @@ export default function SeedsTable() {
             {
                 title: 'Номер партии', field: 'part_number',
                 validate: rowData => !!rowData.part_number,
-                // cellStyle: {minWidth: '250px'},
-
+                cellStyle: {minWidth: '150px'},
             }, {
-                title: 'Дата поставки', field: 'date_time', type: 'date',
+                title: 'Дата поставки', field: 'date_time', type: 'date', cellStyle: {minWidth: '150px'},
                 validate: rowData => !!rowData.date_time,
                 editComponent: props => (
                     <LocalizationProvider adapterLocale={ru} dateAdapter={AdapterDateFns}>
