@@ -1,5 +1,5 @@
 import {useAppDispatch, useAppSelector} from "../hooks";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
     getCountryOrigin,
     getCrops, getGreenhouse,
@@ -8,7 +8,16 @@ import {
     getSeeds,
     getTypeSeeds
 } from "../store/actions/seeds";
-import {Autocomplete, Button, Checkbox, Paper, Stack, TextField} from "@mui/material";
+import {
+    Autocomplete,
+    Button,
+    Checkbox,
+    MenuItem,
+    Paper,
+    Stack,
+    TextField,
+    Typography
+} from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
 import {useForm, Controller, Control} from "react-hook-form";
 // import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
@@ -81,8 +90,10 @@ export default function FiltersForm() {
         country_origin,
         seeds,
         greenhouse,
+        incoming
     } = useAppSelector(state => state.seedsReducer)
     const {isLoading} = useAppSelector(state => state.authReducer)
+    const [totalBalance, setTotalBalance] = useState<number>(0)
 
     useEffect(() => {
         dispatch(getTypeSeeds())
@@ -102,6 +113,16 @@ export default function FiltersForm() {
         }
     }, [])
 
+    useEffect(() => {
+        if (incoming.length) {
+            let balance = 0
+            incoming.forEach(val => {
+                balance += val.real_balance
+            })
+            setTotalBalance(balance)
+        }
+    }, [incoming])
+
     function setDefVal() {
         const searchObj = Object.fromEntries(search)
         if (searchObj.amount__range) {
@@ -114,11 +135,13 @@ export default function FiltersForm() {
             setValue('real_balance_start', realBalanceRange[0])
             setValue('real_balance_end', realBalanceRange[1])
         }
+        if (searchObj.package_opened) {
+            setValue('package_opened', searchObj.package_opened)
+        }
     }
 
     function onSubmit(data: any) {
         data = convertArrayToString(data)
-        console.log(data)
         data.amount__range = `${!data.amount_start && data.amount_end ? '0' : data.amount_start || ''},${data.amount_start && !data.amount_end ? '9999999' : data.amount_end || ''}`
         data.real_balance__range = `${!data.real_balance_start && data.real_balance_end ? '0' : data.real_balance_start || ''},${data.real_balance_start && !data.real_balance_end ? '9999999' : data.real_balance_end || ''}`
         data.amount_start = undefined
@@ -202,6 +225,30 @@ export default function FiltersForm() {
                         />
                     </Grid>
                     <Grid xs={12} sm={6} md={4} lg={3}>
+                        <Controller
+                            name={'package_opened'}
+                            control={control}
+                            defaultValue={''}
+                            render={({field}) => (
+                                <TextField
+                                    {...field}
+                                    select
+                                    label="Пакет вскрыт"
+                                    fullWidth
+                                    size={'small'}
+                                >
+                                    <MenuItem value={''}>Пусто</MenuItem>
+                                    <MenuItem value={'true'}>
+                                        Вскрыт
+                                    </MenuItem>
+                                    <MenuItem value={'false'}>
+                                        Не вскрыт
+                                    </MenuItem>
+                                </TextField>
+                            )}
+                        />
+                    </Grid>
+                    <Grid xs={12} sm={6} md={4} lg={3}>
                         <Stack spacing={2} direction={'row'}>
                             <Controller
                                 name={'amount_start'}
@@ -241,7 +288,10 @@ export default function FiltersForm() {
                             />
                         </Stack>
                     </Grid>
-                    <Grid xs={12} sm={6} md={4} lg={3} smOffset={6} mdOffset={4} lgOffset={3}>
+                    <Grid xs={12} sm={6} md={4} lg={3}>
+                        <Typography sx={{padding: 1, fontWeight: 'bold', fontSize: '1.2rem'}}>Общий остаток: {totalBalance}</Typography>
+                    </Grid>
+                    <Grid xs={12} sm={6} md={4} lg={3} lgOffset={9} mdOffset={8} smOffset={6}>
                         <Stack spacing={2} direction={'row'} sx={{float: 'right'}}>
                             <Button variant={'contained'} color={'error'} disabled={isLoading}
                                     onClick={() => {

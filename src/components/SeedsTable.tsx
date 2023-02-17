@@ -3,7 +3,7 @@ import MaterialTable, {Column} from "material-table";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {useEffect, useMemo, useState} from "react";
 import {createIncoming, deleteIncoming, updateIncoming} from "../store/actions/seeds";
-import {Box, TextField, Tooltip, Typography} from "@mui/material";
+import {Box, TextField} from "@mui/material";
 import {IIncoming} from "../models/ISeeds";
 import {convertListToObject, localizationMT} from '../utils';
 import {LocalizationProvider} from '@mui/x-date-pickers-pro';
@@ -63,9 +63,11 @@ export default function SeedsTable() {
                 validate: rowData => !!rowData.amount,
             }, {
                 title: 'Остаток', field: 'real_balance', type: 'numeric', align: 'center',
+                editable: 'never',
             }, {
                 title: 'Страховой остаток', field: 'gift', type: 'numeric', align: 'center',
-                editable: 'never',
+            }, {
+                title: 'Пакет вскрыт', field: 'package_opened', type: 'boolean', align: 'center',
             }, {
                 title: 'Комментарий', field: 'comment', cellStyle: {minWidth: '250px'},
                 editComponent: ({value, onChange}) => (
