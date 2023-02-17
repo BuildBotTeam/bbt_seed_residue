@@ -13,9 +13,10 @@ import {createExpense, deleteExpense, getExpense, updateExpense} from "../store/
 
 type ExpenseTableProps = {
     incoming: number
+    unit_name: string
 }
 
-export default function ExpenseTable({incoming}: ExpenseTableProps) {
+export default function ExpenseTable({incoming, unit_name}: ExpenseTableProps) {
     const dispatch = useAppDispatch()
     const {seeds, provider, country_origin, expense, greenhouse} = useAppSelector(state => state.seedsReducer)
     const [data, setData] = useState<IExpense[]>([])
@@ -44,6 +45,8 @@ export default function ExpenseTable({incoming}: ExpenseTableProps) {
                 lookup: greenhouse && convertListToObject(greenhouse),
                 validate: rowData => !!rowData.number_greenhouse,
             }, {
+                title: 'Ед. измерения', field: 'unit', editable: 'never', emptyValue: unit_name
+            }, {
                 title: 'Количество', field: 'amount', type: 'numeric', align: 'center',
                 validate: rowData => !!rowData.amount,
             }, {
@@ -60,17 +63,18 @@ export default function ExpenseTable({incoming}: ExpenseTableProps) {
             },
 
         ]),
-        [seeds, country_origin, provider]
+        [seeds, country_origin, provider, unit_name]
     )
 
-    const options = useMemo(() => ({
+    const options: any = useMemo(() => ({
         pageSize: 10,
         draggable: false,
+        addRowPosition: 'first'
         // rowStyle: (rowData: IIncoming) => colorCell[rowData.general_state]
     }), [data])
 
     useEffect(() => {
-        if (incoming in expense) setData(expense[incoming].map(value => ({...value, tableData: {}})))
+        if (incoming in expense) setData(expense[incoming].map(value => ({...value, unit: unit_name, tableData: {}})))
     }, [expense])
 
     return (

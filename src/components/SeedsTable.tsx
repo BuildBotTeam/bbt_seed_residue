@@ -16,7 +16,7 @@ import ExpenseTable from "./ExpenseTable";
 
 export default function SeedsTable() {
     const dispatch = useAppDispatch()
-    const {seeds, provider, country_origin, incoming} = useAppSelector(state => state.seedsReducer)
+    const {seeds, provider, country_origin, incoming, units} = useAppSelector(state => state.seedsReducer)
     const [data, setData] = useState<IIncoming[]>([])
 
     const columns = useMemo<Column<IIncoming>[]>(() => ([
@@ -42,21 +42,18 @@ export default function SeedsTable() {
                 validate: rowData => !!rowData.part_number,
                 lookup: seeds && convertListToObject(seeds),
                 cellStyle: {minWidth: '250px'},
-
             }, {
                 title: 'Год урожая', field: 'crop_year',
-                validate: rowData => !!rowData.crop_year,
-
             }, {
                 title: 'Поставщик', field: 'provider',
-                validate: rowData => !!rowData.provider,
                 lookup: provider && convertListToObject(provider),
-
             }, {
                 title: 'Страна производитель', field: 'country_origin',
-                validate: rowData => !!rowData.country_origin,
                 lookup: country_origin && convertListToObject(country_origin),
-
+            }, {
+                title: 'Ед. измерения', field: 'unit',
+                validate: rowData => !!rowData.unit,
+                lookup: units && convertListToObject(units),
             }, {
                 title: 'Количество', field: 'amount', type: 'numeric', align: 'center',
                 validate: rowData => !!rowData.amount,
@@ -78,12 +75,13 @@ export default function SeedsTable() {
             },
 
         ]),
-        [seeds, country_origin, provider]
+        [seeds, country_origin, provider, units]
     )
 
-    const options = useMemo(() => ({
+    const options: any = useMemo(() => ({
         pageSize: 10,
         draggable: false,
+        addRowPosition: 'first',
         // rowStyle: (rowData: IIncoming) => colorCell[rowData.general_state]
     }), [data])
 
@@ -100,7 +98,7 @@ export default function SeedsTable() {
                 columns={columns.map((c) => ({...c, tableData: undefined}))}
                 data={data}
                 detailPanel={rowData => {
-                    return <ExpenseTable incoming={rowData.id}/>
+                    return <ExpenseTable incoming={rowData.id} unit_name={rowData.unit_name}/>
                 }}
                 // actions={actions}
                 editable={{

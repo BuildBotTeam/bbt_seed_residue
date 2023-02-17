@@ -9,7 +9,7 @@ import {
     getIncoming,
     getProvider,
     getSeeds,
-    getTypeSeeds, updateExpense, updateIncoming
+    getTypeSeeds, getUnits, updateExpense, updateIncoming
 } from "../actions/seeds";
 import {deleteElementFromList, updateElementInList} from "../../utils";
 
@@ -22,6 +22,7 @@ interface ISeedsState {
     crops: IFilter[]
     country_origin: IFilter[]
     seeds: ISeeds[]
+    units: IFilter[]
     incoming: IIncoming[]
     expense: IIncomingExpense
 }
@@ -34,6 +35,7 @@ const initialState: ISeedsState = {
     crops: [],
     country_origin: [],
     seeds: [],
+    units: [],
     incoming: [],
     expense: {},
 }
@@ -63,6 +65,9 @@ export const seedsSlice = createSlice({
         })
         builder.addCase(getSeeds.fulfilled, (state, {payload}) => {
             state.seeds = payload
+        })
+        builder.addCase(getUnits.fulfilled, (state, {payload}) => {
+            state.units = payload
         })
         builder.addCase(getIncoming.fulfilled, (state, {payload}) => {
             if (!Array.isArray(payload)) {

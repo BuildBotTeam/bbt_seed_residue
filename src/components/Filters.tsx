@@ -6,7 +6,7 @@ import {
     getIncoming,
     getProvider,
     getSeeds,
-    getTypeSeeds
+    getTypeSeeds, getUnits
 } from "../store/actions/seeds";
 import {
     Autocomplete,
@@ -102,6 +102,7 @@ export default function FiltersForm() {
         dispatch(getCountryOrigin())
         dispatch(getCrops())
         dispatch(getGreenhouse())
+        dispatch(getUnits())
     }, [])
 
     useEffect(() => {

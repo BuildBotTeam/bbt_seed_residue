@@ -87,6 +87,18 @@ export const getSeeds = createAsyncThunk(
     }
 )
 
+export const getUnits = createAsyncThunk(
+    'getUnits',
+    async (_, thunkAPI) => {
+        try {
+            const {data} = await api.get<IFilter[]>(apiUrl + 'units/')
+            return data
+        } catch (e) {
+            return thunkAPI.rejectWithValue(apiError(e as Error | AxiosError))
+        }
+    }
+)
+
 export const getIncoming = createAsyncThunk(
     'getIncoming',
     async (query: any, thunkAPI) => {

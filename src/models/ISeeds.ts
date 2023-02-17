@@ -30,8 +30,10 @@ export interface IIncoming {
     amount: number
     real_balance: number
     gift: number
+    unit: number
     package_opened: boolean
     comment: string
+    unit_name: string
 }
 
 export interface IIncomingExpense {
